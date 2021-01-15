@@ -2,6 +2,7 @@ from tkinter import *
 from PIL import Image, ImageTk
 import os
 from tkinter import messagebox
+from PyDictionary import PyDictionary
 
 root = Tk()
 root.title("READ ENGLISH BOOK AND STUDY ENGLISH (REBASE)")
@@ -15,6 +16,8 @@ archivotexto_nombre_resolucion_pantalla.close()
 size=float(resolucion_pantalla)
 
 size_options=["1920x1200","1680x1050","1440x900"]
+
+save_words_setence_options=["SENTENCE","WORD"]
 
 miCanvas=Canvas(root, width=1920*size, height=1200*size)
 miCanvas.pack()
@@ -43,24 +46,122 @@ def home():
     titulo.place(x=573*size, y=120*size)
     
 #1 ------------------------------- Ventana Modo Lectura -------------------------------------------
-#1 ------------------------------- Funciones Modo Lectura -------------------------------------------
     def window_read():
         global my_img
         root.withdraw()
         ventana_lectura=Toplevel()
-        #ventana_lectura.state(newstate='normal')
-        ventana_lectura.geometry("1800x1100")
+        if size == 1:
+                screen_size="1920x1200"
+        elif size == 0.875:
+                screen_size="1680x1050"
+        elif size == 0.75:
+                screen_size="1440x900"
+        ventana_lectura.geometry(screen_size)
         my_img = ImageTk.PhotoImage(Image.open(fondo_pantalla))
         my_label = Label(ventana_lectura, image=my_img).place(relwidth=1, relheight=1)
 
+        texto_contiene_titulo=open("memory/titulo_texto.txt",encoding="utf8")
+        almacena_titulo=texto_contiene_titulo.read()
+        texto_contiene_titulo.close()
+
+        texto_contiene_page_marker=open("memory/page_marker.txt",encoding="utf8")
+        almacena_page_marker=texto_contiene_page_marker.read()
+        texto_contiene_page_marker.close()
+
+#1 ------------------------------- Funciones Modo Lectura -------------------------------------------
+        def ingresar_texto_nuevo():
+                return
+
+        def next_line():
+                return
+        
+        def previous_line():
+                return
+        
+        def english_dictionary():
+
+                dictionary_word=PyDictionary()
+                meaning_word = dictionary_text.get()
+                result=dictionary_word.meaning(meaning_word)                                                
+                messagebox.showinfo("REABSE","*** DICTIONARY  ***\n\n"+str(result)).options
+        
+        def page_marker():
+                return
+                
+        def spanish_translate_text():
+                return
+        
+        def save_word_sentence():
+                return
 #1 ------------------------------- Botones Modo Lectura -------------------------------------------
-        button_quit = Button(ventana_lectura, text="Exit Program",font=("Bookman Old Style",10,"bold") , command=root.quit)
-        button_quit.place(x=800, y=900)
+        
+        button_save_word_setence=Button(ventana_lectura,text="SAVE WORD/SENTENCE ",font=("Bookman Old Style",round(10*size),"bold"))
+        button_save_word_setence.place(x=round(310*size),y=round(size*820))
+        button_save_word_setence.config(width=20)
 
+        button_spanish_translate_text=Button(ventana_lectura,text="VER TRADUCCIÓN ",font=("Bookman Old Style",round(12*size),"bold"))
+        button_spanish_translate_text.place(x=round(70*size),y=round(size*600))
+        button_spanish_translate_text.config(bg="#FACC2E", width=15)
+        
+        button_page_marker=Button(ventana_lectura, text="PAGE MARKER",font=("Bookman Old Style",round(10*size),"bold"),width=12 , command=page_marker)
+        button_page_marker.place(x=round(350*size), y=round(460*size))
+        button_page_marker.config(bg="#FACC2E")
+        
+        button_english_dictionary=Button(ventana_lectura, text="ENGLISH DICTIONARY",font=("Bookman Old Style",round(10*size),"bold"),width=20 , command=english_dictionary)
+        button_english_dictionary.place(x=round(970*size), y=round(460*size))
+        
+        button_ingresar_texto_nuevo=Button(ventana_lectura,text="APPLY NEW TEXT",font=("Bookman Old Style",round(10*size),"bold") , command=ingresar_texto_nuevo)
+        button_ingresar_texto_nuevo.place(x=round(550*size), y=round(120*size))
+
+        button_next_line=Button(ventana_lectura, text="NEXT",font=("Bookman Old Style",round(10*size),"bold"),width=12 , command=next_line)
+        button_next_line.place(x=round(750*size), y=round(460*size))
+
+        button_previous_line=Button(ventana_lectura, text="PREVIOUS",font=("Bookman Old Style",round(10*size),"bold"),width=12 , command=previous_line)
+        button_previous_line.place(x=round(550*size), y=round(460*size))
+
+        button_quit = Button(ventana_lectura, text="Exit Program",font=("Bookman Old Style",round(10*size),"bold") , command=root.quit)
+        button_quit.place(x=round(800*size), y=round(1000*size))
+
+#1 ------------------------------- Cuadro texto Modo Lectura -------------------------------------------
+
+        cuadro_save_wrods_setence=Entry(ventana_lectura, width=round(75*size), borderwidth=round(5*size), justify="left")
+        cuadro_save_wrods_setence.place(x=round(510*size), y=round(820*size))
+        cuadro_save_wrods_setence.config(font=("Bookman Old Style",round(12*size),"bold"))
+
+        nombre_texto=Entry(ventana_lectura, width=round(35*size), borderwidth=round(5*size), justify="center")
+        nombre_texto.place(x=round(700*size), y=round(120*size))
+        nombre_texto.config(font=("Bookman Old Style",round(12*size),"bold"))
+        nombre_texto.insert(0,almacena_titulo)
+
+        dictionary_text=Entry(ventana_lectura, width=round(25*size), borderwidth=round(5*size), justify="center")
+        dictionary_text.place(x=round(1170*size), y=round(460*size))
+        dictionary_text.config(font=("Bookman Old Style",round(12*size),"bold"))
+
+        texto_ENG=Text(ventana_lectura, width=round(100*size), height=round(4*size), font=("Helvetica",round(16*size)),borderwidth=round(5*size))
+        texto_ENG.place(x=round(280*size),y=round(260*size))
+
+        texto_ESP=Text(ventana_lectura, width=round(100*size), height=round(4*size), font=("Helvetica",round(16*size)),borderwidth=round(5*size))
+        texto_ESP.place(x=round(280*size),y=round(560*size))
+
+        contador = Entry(ventana_lectura, width=5, borderwidth=5, justify="center")
+        contador.place(x=round(680*size) , y=round(460*size))
+        contador.config(font=("Bookman Old Style",round(10*size),"bold"))
+        contador.insert(0,almacena_page_marker)
 #1 ------------------------------- Titulo Modo Lectura -------------------------------------------
-        titulo=Label(ventana_lectura, text="READING MODE REBASE", font=("Bookman Old Style",30),bg="#e8dabd")
-        titulo.place(x=650, y=0)
+        titulo=Label(ventana_lectura, text="READING MODE REBASE", font=("Bookman Old Style",round(30*size)), bg="#e8dabd")
+        titulo.place(x=round(650*size), y=round(10*size))
+        titulo_texto=Label(ventana_lectura, text="TITLE OF THE TEXT",font=("Bookman Old Style",round(15*size),"bold"),bg="#FACC2E")
+        titulo_texto.place(x=round(785*size), y=round(70*size))
 
+#1------------------------------- Etiquetas Modo Lectura -------------------------------------------
+
+        texto_english_label=Label(ventana_lectura,text="ENGLISH TEXT: ",font=("Bookman Old Style",round(12*size),"bold"))
+        texto_english_label.place(x=round(70*size),y=round(size*300))
+        texto_english_label.config(bg="#FACC2E", width=15)
+
+        #texto_espanol_label=Label(ventana_lectura,text="TEXTO ESPAÑOL: ",font=("Bookman Old Style",round(12*size),"bold"))
+        #texto_espanol_label.place(x=round(70*size),y=round(size*600))
+        #texto_espanol_label.config(bg="#FACC2E", width=15)
 
 #2 ------------------------------- Ventana Modo Estudio -------------------------------------------
     def window_study():
@@ -87,12 +188,12 @@ def home():
                 archivotexto_nombre_fondo_panatalla=open("memory/nombre_fondo_pantalla.txt","w")
                 archivotexto_nombre_fondo_panatalla.write(recoger_nombre_fondo_pantalla)
                 archivotexto_nombre_fondo_panatalla.close()
-                messagebox.showinfo("REABSE","*** El fondo de pantalla ha sido cambiado por ***\n\n"+imagen_eleccion.get()+"\n\n*** Cierre el programa y vuela a abrirlo ***")
+                messagebox.showinfo("REABSE","*** El fondo de pantalla ha sido cambiado por ***\n\n"+imagen_eleccion.get()+"\n\n*** Cierre el programa y vuela a abrirlo para ver cambios ***")
 
         def size_selection():
                 global size
                 #election_size = Label(ventana_configuracion, text=clicked.get())
-                if clicked.get() == "1920x1200":
+                if clicked.get() == "1920x1200": 
                         size=1
                 elif clicked.get() == "1680x1050":
                         size=0.875
@@ -103,7 +204,7 @@ def home():
                 
                 resolucion_pantalla=archivotexto_nombre_resolucion_pantalla.write(str(size))
                 archivotexto_nombre_resolucion_pantalla.close()
-                messagebox.showinfo("REABSE","*** El fondo de pantalla ha sido cambiado por ***\n\n"+clicked.get()+"\n\n*** Cierre el programa y vuela a abrirlo ***")
+                messagebox.showinfo("REABSE","*** La resolucion de pantalla ha sido cambiado a ***\n\n"+clicked.get()+"\n\n*** Cierre el programa y vuela a abrirlo para ver cambios ***")
 
                 
 #3 ------------------------------- Titulo Modo Lectura -------------------------------------------
@@ -112,23 +213,25 @@ def home():
 
         clicked = StringVar()
         clicked.set(size_options[0])
+        
         drop= OptionMenu(ventana_configuracion, clicked, *size_options)
         drop.place(x=round(400*size), y=round(600*size))
+        drop.config(width=round(80*size), font=("Bookman Old Style",round(10*size),"bold"))
     
 #3 ------------------------------- Botones Configuración -------------------------------------------
 
         boton_aplicar_fondo_pantalla=Button(ventana_configuracion, text=("APPLY WALLPAPER"),font=("Bookman Old Style",round(12*size),"bold"),width=round(25*size),height=round(1*size), command=cambiar_fondo)
         boton_aplicar_fondo_pantalla.place(x=round(1200*size), y=round(300*size))
         
-        boton_written=Button(ventana_configuracion, text=("READ BOOK/TEXT"),font=("Bookman Old Style",round(10*size),"bold"),width=round(25*size),height=round(1*size), command=window_read)
-        boton_written.place(x=round(490*size), y=round(900*size))
-        boton_listen=Button(ventana_configuracion, text=("STUDY ENGLISH"),font=("Bookman Old Style",round(10*size),"bold"), width=round(25*size),height=round(1*size),command=window_study)
-        boton_listen.place(x=round(1060*size), y=round(900*size))
+        boton_read=Button(ventana_configuracion, text=("READ BOOK/TEXT"),font=("Bookman Old Style",round(10*size),"bold"),width=round(25*size),height=round(1*size), command=window_read)
+        boton_read.place(x=round(490*size), y=round(900*size))
+        boton_study=Button(ventana_configuracion, text=("STUDY ENGLISH"),font=("Bookman Old Style",round(10*size),"bold"), width=round(25*size),height=round(1*size),command=window_study)
+        boton_study.place(x=round(1060*size), y=round(900*size))
         
         button_quit = Button(ventana_configuracion, text="Exit Program",font=("Bookman Old Style",round(10*size),"bold") , command=root.quit)
         button_quit.place(x=round(839*size), y=round(970*size))
 
-        boton_size_selection=Button(ventana_configuracion, text="Select Size Resolution", command=size_selection)
+        boton_size_selection=Button(ventana_configuracion, text=("APPLY SIZE RESOLUTION"),font=("Bookman Old Style",round(12*size),"bold"),width=round(25*size), command=size_selection)
         boton_size_selection.place(x=round(1200*size), y=round(600*size))
 
 #3 ------------------------------- Cuadro de texto Configuración -------------------------------------------
