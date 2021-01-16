@@ -24,6 +24,9 @@ miCanvas=Canvas(root, width=1920*size, height=1200*size)
 miCanvas.pack()
 
 my_img=None
+#texto_ENG=None
+
+lista_texto=[]
 
 camino_carpeta_images="images/"
 
@@ -48,6 +51,8 @@ def home():
     def window_read():
         global my_img
         global save_words_setence_options
+        
+
         root.withdraw()
         ventana_lectura=Toplevel()
         if size == 1:
@@ -74,10 +79,20 @@ def home():
         drop_read_save=OptionMenu(ventana_lectura,clicked_read, *save_words_setence_options)
         drop_read_save.place(x=round(310*size),y=round(820*size))
         drop_read_save.config(width=round(20*size), font=("Book Old Style", round(10*size),"bold"))
-        
 
 #1 ------------------------------- Funciones Modo Lectura -------------------------------------------
-        def ingresar_texto_nuevo():
+        def texto_inicio():
+                num_lista=contador.get()
+                camino_texto_lectura="texto_lectura/"+almacena_titulo
+                abrir_texto_inicio=open(camino_texto_lectura, encoding="utf8")
+                for line in abrir_texto_inicio:                
+                        line=line.split(".")
+                        line=line[int(num_lista)]
+                        line=line[1:]
+                        texto_ENG.insert(END, line)
+                abrir_texto_inicio.close
+        def ingresar_texto():
+                
                 texto_nuevo=nombre_texto.get()
                 camino_texto_lectura="texto_lectura/"+texto_nuevo
                 abrir_texto=open(camino_texto_lectura, encoding="utf8")
@@ -90,11 +105,72 @@ def home():
                 
                 messagebox.showinfo("REABSE","*** El texto ha sido cambiado por ***\n\n"+nombre_texto.get()+"\n\n******")
 
+        def spanish_translate_text():
+                cntrl=0
+                while cntrl==0:
+                        num_lista=contador.get()
+                        camino_texto_lectura="texto_lectura/"+almacena_titulo
+                        abrir_texto=open(camino_texto_lectura, encoding="utf8")
+                        
+                        try:
+                                for line in abrir_texto:
+                                        line=line.rstrip("\n")                
+                                        line=line.split(".")
+                                        linea_Esp=line[int(num_lista)]
+                                        translator=google_translator()
+                                        translation=translator.translate(linea_Esp,lang_src="en", lang_tgt="es")
+                                        texto_ESP.insert(END, translation)
+                        except:
+                                texto_ESP.insert(END,0)
+                        abrir_texto.close()
+                        recoger_respuesta=int(texto_ESP.get(1.0,END))
+                        if recoger_respuesta == 0:
+                                cntrl+=0
+                                texto_ESP.delete(1.0,END)
+                        else:
+                                cntrl+=1
+                                
+
         def next_line():
-                return
+                texto_ESP.delete(1.0,END)
+                texto_ENG.delete(1.0,END)
+                cuadro_save_words_setence.delete(0,END)
+                dictionary_text.delete(0,END)
+                num_lista=contador.get()
+                siguiente=int(num_lista)+1
+                contador.delete(0,END)
+                contador.insert(0,siguiente)
+
+                camino_texto_lectura="texto_lectura/"+almacena_titulo
+                abrir_texto_inicio=open(camino_texto_lectura, encoding="utf8")
+
+                for line in abrir_texto_inicio:                
+                        line=line.split(".")
+                        line=line[siguiente]
+                        line=line[1:]
+                        texto_ENG.insert(END, line)
+                abrir_texto_inicio.close
+
         
         def previous_line():
-                return
+                texto_ESP.delete(1.0,END)
+                texto_ENG.delete(1.0,END)
+                cuadro_save_words_setence.delete(0,END)
+                dictionary_text.delete(0,END)
+                num_lista=contador.get()
+                anterior=int(num_lista)-1
+                contador.delete(0,END)
+                contador.insert(0,anterior)
+
+                camino_texto_lectura="texto_lectura/"+almacena_titulo
+                abrir_texto_inicio=open(camino_texto_lectura, encoding="utf8")
+
+                for line in abrir_texto_inicio:                
+                        line=line.split(".")
+                        line=line[anterior]
+                        line=line[1:]
+                        texto_ENG.insert(END, line)
+                abrir_texto_inicio.close
         
         def english_dictionary():
 
@@ -104,22 +180,42 @@ def home():
                 messagebox.showinfo("REABSE","*** DICTIONARY  ***\n\n"+str(result)).options
         
         def page_marker():
-                return
                 
-        def spanish_translate_text():
-                return
-        
+                marcador_pagina=open("memory/page_marker.txt","w")
+                marcador_pagina.write(contador.get())
+                messagebox.showinfo("English Assitant","*** El marcador de página ***\n\n"+contador.get()+"\n\n*** ha sido guardado ***")
+                marcador_pagina.close()
+
         def save_word_sentence():
-                return
+                #global save_words_setence_options
+                if clicked_read.get() == "SENTENCE":
+                        
+                        sentencia_para_estudiar=open("memory/sentencias_para_estudiar.txt","w")
+                        sentencia_para_estudiar.write("\n")
+                        sentencia_para_estudiar.write(cuadro_save_words_setence.get())
+                        messagebox.showinfo("English Assitant","*** La Sentencia ***\n\n"+cuadro_save_words_setence.get()+"\n\n*** fue incluida ***")
+                        sentencia_para_estudiar.close()
+
+                elif clicked_read.get() == "WORD":
+                        palabra_para_estudiar=open("memory/palabras_para_estudiar.txt","w")
+                        palabra_para_estudiar.write("\n")
+                        palabra_para_estudiar.write(cuadro_save_words_setence.get())
+                        messagebox.showinfo("English Assitant","*** La Palabra ***\n\n"+cuadro_save_words_setence.get()+"\n\n*** fue incluida ***")
+                        palabra_para_estudiar.close()
+
 #1 ------------------------------- Botones Modo Lectura -------------------------------------------
         
-        button_save_word_setence=Button(ventana_lectura,text="SAVE WORD/SENTENCE ",font=("Bookman Old Style",round(10*size),"bold"))
+        button_save_word_setence=Button(ventana_lectura,text="SAVE WORD/SENTENCE ",font=("Bookman Old Style",round(10*size),"bold"), command=save_word_sentence)
         button_save_word_setence.place(x=round(800*size),y=round(size*780))
         button_save_word_setence.config(width=20)
 
-        button_spanish_translate_text=Button(ventana_lectura,text="VER TRADUCCIÓN ",font=("Bookman Old Style",round(12*size),"bold"))
+        button_spanish_translate_text=Button(ventana_lectura,text="VER TRADUCCIÓN ",font=("Bookman Old Style",round(12*size),"bold"), command=spanish_translate_text)
         button_spanish_translate_text.place(x=round(70*size),y=round(size*600))
         button_spanish_translate_text.config(bg="#FACC2E", width=15)
+
+        button_texto_inicio=Button(ventana_lectura,text="DAR INICO ",font=("Bookman Old Style",round(12*size),"bold"),command=texto_inicio)
+        button_texto_inicio.place(x=round(70*size),y=round(size*300))
+        button_texto_inicio.config(bg="#FACC2E", width=15)
         
         button_page_marker=Button(ventana_lectura, text="PAGE MARKER",font=("Bookman Old Style",round(10*size),"bold"),width=12 , command=page_marker)
         button_page_marker.place(x=round(350*size), y=round(460*size))
@@ -128,8 +224,8 @@ def home():
         button_english_dictionary=Button(ventana_lectura, text="ENGLISH DICTIONARY",font=("Bookman Old Style",round(10*size),"bold"),width=20 , command=english_dictionary)
         button_english_dictionary.place(x=round(970*size), y=round(460*size))
         
-        button_ingresar_texto_nuevo=Button(ventana_lectura,text="APPLY NEW TEXT",font=("Bookman Old Style",round(10*size),"bold") , command=ingresar_texto_nuevo)
-        button_ingresar_texto_nuevo.place(x=round(550*size), y=round(120*size))
+        button_ingresar_texto=Button(ventana_lectura,text="APPLY NEW TEXT",font=("Bookman Old Style",round(10*size),"bold") , command=ingresar_texto)
+        button_ingresar_texto.place(x=round(550*size), y=round(120*size))
 
         button_next_line=Button(ventana_lectura, text="NEXT",font=("Bookman Old Style",round(10*size),"bold"),width=12 , command=next_line)
         button_next_line.place(x=round(750*size), y=round(460*size))
@@ -142,14 +238,15 @@ def home():
 
 #1 ------------------------------- Cuadro texto Modo Lectura -------------------------------------------
 
-        cuadro_save_wrods_setence=Entry(ventana_lectura, width=round(75*size), borderwidth=round(5*size), justify="left")
-        cuadro_save_wrods_setence.place(x=round(510*size), y=round(820*size))
-        cuadro_save_wrods_setence.config(font=("Bookman Old Style",round(12*size),"bold"))
+        cuadro_save_words_setence=Entry(ventana_lectura, width=round(75*size), borderwidth=round(5*size), justify="left")
+        cuadro_save_words_setence.place(x=round(510*size), y=round(820*size))
+        cuadro_save_words_setence.config(font=("Bookman Old Style",round(12*size),"bold"))
 
         nombre_texto=Entry(ventana_lectura, width=round(35*size), borderwidth=round(5*size), justify="center")
         nombre_texto.place(x=round(700*size), y=round(120*size))
         nombre_texto.config(font=("Bookman Old Style",round(12*size),"bold"))
         nombre_texto.insert(0,almacena_titulo)
+        #recoger_nombre_texto=nombre_texto.get()
 
         dictionary_text=Entry(ventana_lectura, width=round(25*size), borderwidth=round(5*size), justify="center")
         dictionary_text.place(x=round(1170*size), y=round(460*size))
@@ -157,6 +254,7 @@ def home():
 
         texto_ENG=Text(ventana_lectura, width=round(100*size), height=round(4*size), font=("Helvetica",round(16*size)),borderwidth=round(5*size))
         texto_ENG.place(x=round(280*size),y=round(260*size))
+        #texto_ENG.insert(END, lista_texto[])
 
         texto_ESP=Text(ventana_lectura, width=round(100*size), height=round(4*size), font=("Helvetica",round(16*size)),borderwidth=round(5*size))
         texto_ESP.place(x=round(280*size),y=round(560*size))
@@ -165,6 +263,7 @@ def home():
         contador.place(x=round(680*size) , y=round(460*size))
         contador.config(font=("Bookman Old Style",round(10*size),"bold"))
         contador.insert(0,almacena_page_marker)
+                
 #1 ------------------------------- Titulo Modo Lectura -------------------------------------------
         titulo=Label(ventana_lectura, text="READING MODE REBASE", font=("Bookman Old Style",round(30*size)), bg="#e8dabd")
         titulo.place(x=round(650*size), y=round(10*size))
@@ -173,13 +272,11 @@ def home():
 
 #1------------------------------- Etiquetas Modo Lectura -------------------------------------------
 
-        texto_english_label=Label(ventana_lectura,text="ENGLISH TEXT: ",font=("Bookman Old Style",round(12*size),"bold"))
-        texto_english_label.place(x=round(70*size),y=round(size*300))
-        texto_english_label.config(bg="#FACC2E", width=15)
-
         text_save_as=Label(ventana_lectura,text="SAVE AS",font=("Bookman Old Style",round(12*size),"bold"))
         text_save_as.place(x=round(320*size),y=round(size*780))
         text_save_as.config(bg="#FACC2E", width=15)
+
+        
 
 #2 ------------------------------- Ventana Modo Estudio -------------------------------------------
     def window_study():
