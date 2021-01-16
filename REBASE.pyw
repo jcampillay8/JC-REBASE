@@ -20,6 +20,8 @@ size_options=["1920x1200","1680x1050","1440x900"]
 
 save_words_setence_options=["SENTENCE","WORD"]
 
+lista_textos=os.listdir(r"texto_lectura")
+
 miCanvas=Canvas(root, width=1920*size, height=1200*size)
 miCanvas.pack()
 
@@ -79,6 +81,13 @@ def home():
         drop_read_save=OptionMenu(ventana_lectura,clicked_read, *save_words_setence_options)
         drop_read_save.place(x=round(310*size),y=round(820*size))
         drop_read_save.config(width=round(20*size), font=("Book Old Style", round(10*size),"bold"))
+
+        clicked_texto=StringVar()
+        clicked_texto.set(lista_textos[0])
+
+        drop_text=OptionMenu(ventana_lectura,clicked_texto, *lista_textos)
+        drop_text.place(x=round(1100*size), y=round(120*size))
+        drop_text.config(width=round(20*size), font=("Book Old Style", round(10*size),"bold"))
 
 #1 ------------------------------- Funciones Modo Lectura -------------------------------------------
         def texto_inicio():
