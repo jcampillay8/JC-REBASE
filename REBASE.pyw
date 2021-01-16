@@ -3,6 +3,7 @@ from PIL import Image, ImageTk
 import os
 from tkinter import messagebox
 from PyDictionary import PyDictionary
+from google_trans_new import google_translator
 
 root = Tk()
 root.title("READ ENGLISH BOOK AND STUDY ENGLISH (REBASE)")
@@ -27,9 +28,7 @@ my_img=None
 camino_carpeta_images="images/"
 
 archivotexto_nombre_fondo_panatalla=open("memory/nombre_fondo_pantalla.txt",encoding="utf8")
-
 fondo_pantalla = camino_carpeta_images+archivotexto_nombre_fondo_panatalla.read()
-
 archivotexto_nombre_fondo_panatalla.close()
 
 background_image = PhotoImage(file=str(fondo_pantalla))
@@ -48,6 +47,7 @@ def home():
 #1 ------------------------------- Ventana Modo Lectura -------------------------------------------
     def window_read():
         global my_img
+        global save_words_setence_options
         root.withdraw()
         ventana_lectura=Toplevel()
         if size == 1:
@@ -68,9 +68,27 @@ def home():
         almacena_page_marker=texto_contiene_page_marker.read()
         texto_contiene_page_marker.close()
 
+        clicked_read=StringVar()
+        clicked_read.set(save_words_setence_options[0])
+
+        drop_read_save=OptionMenu(ventana_lectura,clicked_read, *save_words_setence_options)
+        drop_read_save.place(x=round(310*size),y=round(820*size))
+        drop_read_save.config(width=round(20*size), font=("Book Old Style", round(10*size),"bold"))
+        
+
 #1 ------------------------------- Funciones Modo Lectura -------------------------------------------
         def ingresar_texto_nuevo():
-                return
+                texto_nuevo=nombre_texto.get()
+                camino_texto_lectura="texto_lectura/"+texto_nuevo
+                abrir_texto=open(camino_texto_lectura, encoding="utf8")
+                lectura_libro_texto=abrir_texto.read()
+                abrir_texto.close
+
+                texto_contiene_titulo2=open("memory/titulo_texto.txt","w")
+                texto_contiene_titulo2.write(nombre_texto.get())
+                texto_contiene_titulo2.close()
+                
+                messagebox.showinfo("REABSE","*** El texto ha sido cambiado por ***\n\n"+nombre_texto.get()+"\n\n******")
 
         def next_line():
                 return
@@ -96,7 +114,7 @@ def home():
 #1 ------------------------------- Botones Modo Lectura -------------------------------------------
         
         button_save_word_setence=Button(ventana_lectura,text="SAVE WORD/SENTENCE ",font=("Bookman Old Style",round(10*size),"bold"))
-        button_save_word_setence.place(x=round(310*size),y=round(size*820))
+        button_save_word_setence.place(x=round(800*size),y=round(size*780))
         button_save_word_setence.config(width=20)
 
         button_spanish_translate_text=Button(ventana_lectura,text="VER TRADUCCIÓN ",font=("Bookman Old Style",round(12*size),"bold"))
@@ -120,7 +138,7 @@ def home():
         button_previous_line.place(x=round(550*size), y=round(460*size))
 
         button_quit = Button(ventana_lectura, text="Exit Program",font=("Bookman Old Style",round(10*size),"bold") , command=root.quit)
-        button_quit.place(x=round(800*size), y=round(1000*size))
+        button_quit.place(x=round(800*size), y=round(930*size))
 
 #1 ------------------------------- Cuadro texto Modo Lectura -------------------------------------------
 
@@ -159,9 +177,9 @@ def home():
         texto_english_label.place(x=round(70*size),y=round(size*300))
         texto_english_label.config(bg="#FACC2E", width=15)
 
-        #texto_espanol_label=Label(ventana_lectura,text="TEXTO ESPAÑOL: ",font=("Bookman Old Style",round(12*size),"bold"))
-        #texto_espanol_label.place(x=round(70*size),y=round(size*600))
-        #texto_espanol_label.config(bg="#FACC2E", width=15)
+        text_save_as=Label(ventana_lectura,text="SAVE AS",font=("Bookman Old Style",round(12*size),"bold"))
+        text_save_as.place(x=round(320*size),y=round(size*780))
+        text_save_as.config(bg="#FACC2E", width=15)
 
 #2 ------------------------------- Ventana Modo Estudio -------------------------------------------
     def window_study():
